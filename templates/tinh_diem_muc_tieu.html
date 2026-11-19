@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính điểm mục tiêu</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container py-5">
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+
+            <h2 class="fw-bold mb-2">Tính điểm mục tiêu</h2>
+            <p class="text-muted">
+                Tính điểm thi cuối kỳ cần đạt để đạt điểm tổng kết mong muốn.
+            </p>
+
+            <hr>
+
+            <div class="mb-3">
+                <label class="form-label">Điểm hệ số 1</label>
+                <input type="number" id="heSo1" class="form-control"
+                       min="0" max="10" step="0.1" placeholder="Nhập điểm hệ số 1">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Điểm hệ số 2</label>
+                <input type="number" id="heSo2" class="form-control"
+                       min="0" max="10" step="0.1" placeholder="Nhập điểm hệ số 2">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Điểm tổng kết mục tiêu</label>
+                <input type="number" id="mucTieu" class="form-control"
+                       min="0" max="10" step="0.1" placeholder="Ví dụ: 8">
+            </div>
+
+            <button class="btn btn-primary" onclick="tinhDiem()">
+                Tính điểm cần đạt
+            </button>
+
+            <div id="ketQua" class="mt-4"></div>
+
+            <a href="/" class="btn btn-secondary mt-3">
+                Quay về trang chủ
+            </a>
+
+        </div>
+    </div>
+</div>
+
+<script>
+function tinhDiem() {
+    const hs1 = Number(document.getElementById("heSo1").value);
+    const hs2 = Number(document.getElementById("heSo2").value);
+    const mucTieu = Number(document.getElementById("mucTieu").value);
+
+    const ketQua = document.getElementById("ketQua");
+
+    const cacO = ["heSo1", "heSo2", "mucTieu"];
+
+    for (const id of cacO) {
+        const o = document.getElementById(id);
+
+        if (o.value === "" || Number(o.value) < 0 || Number(o.value) > 10) {
+            ketQua.innerHTML =
+                '<div class="alert alert-danger">Vui lòng nhập đầy đủ điểm từ 0 đến 10.</div>';
+            return;
+        }
+    }
+
+    const diemQuaTrinh = (hs1 + hs2 * 2) / 3;
+    const diemThiCan = (mucTieu - diemQuaTrinh * 0.4) / 0.6;
+
+    if (diemThiCan > 10) {
+        ketQua.innerHTML =
+            '<div class="alert alert-warning">Mục tiêu này không thể đạt được vì điểm thi cuối kỳ cần lớn hơn 10.</div>';
+    } else if (diemThiCan < 0) {
+        ketQua.innerHTML =
+            '<div class="alert alert-info">Điểm quá trình đã đủ để đạt mục tiêu này. Điểm thi cần tối thiểu là 0.</div>';
+    } else {
+        ketQua.innerHTML =
+            '<div class="alert alert-success">Bạn cần đạt ít nhất <strong>' +
+            diemThiCan.toFixed(2) +
+            '</strong> điểm thi cuối kỳ để đạt mục tiêu.</div>';
+    }
+}
+</script>
+
+</body>
+</html>

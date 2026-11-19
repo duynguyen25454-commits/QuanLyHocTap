@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sửa thông tin sinh viên</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+        body {
+            background: #f3f5fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-card {
+            max-width: 750px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        h2 {
+            color: #1d3b75;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="form-card">
+
+        <h2>Sửa thông tin sinh viên</h2>
+
+        <form action="{{ url_for('sua_sinh_vien', id=sv.id) }}"
+              method="POST">
+
+            <div class="mb-3">
+                <label class="form-label">Mã sinh viên</label>
+                <input type="text" name="ma_sv"
+                       class="form-control"
+                       value="{{ sv.ma_sv }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Họ và tên</label>
+                <input type="text" name="ho_ten"
+                       class="form-control"
+                       value="{{ sv.ho_ten }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Ngày sinh</label>
+                <input type="date" name="ngay_sinh"
+                       class="form-control"
+                       value="{{ sv.ngay_sinh or '' }}">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Giới tính</label>
+                <select name="gioi_tinh" class="form-select">
+                    <option value="Nam"
+                        {% if sv.gioi_tinh == 'Nam' %}selected{% endif %}>
+                        Nam
+                    </option>
+
+                    <option value="Nữ"
+                        {% if sv.gioi_tinh == 'Nữ' %}selected{% endif %}>
+                        Nữ
+                    </option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" name="email"
+                       class="form-control"
+                       value="{{ sv.email or '' }}">
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Số điện thoại</label>
+                <input type="text" name="so_dien_thoai"
+                       class="form-control"
+                       value="{{ sv.so_dien_thoai or '' }}">
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Lưu thay đổi
+            </button>
+
+            <a href="{{ url_for('danh_sach_sinh_vien') }}"
+               class="btn btn-secondary">
+                Quay lại
+            </a>
+
+        </form>
+
+    </div>
+</div>
+
+</body>
+</html>
