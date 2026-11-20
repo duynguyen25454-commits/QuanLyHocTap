@@ -419,13 +419,37 @@ def thong_ke():
         GROUP BY mon_hoc.id, mon_hoc.ten_mon
         ORDER BY mon_hoc.ten_mon
     """).fetchall()
+    
     thong_ke_mon_hoc = [
-    {
-        "ten_mon": row["ten_mon"],
-        "diem_trung_binh": float(row["diem_trung_binh"])
-    }
-    for row in thong_ke_mon_hoc
-]
+        {
+            "ten_mon": row["ten_mon"],
+            "diem_trung_binh": float(row["diem_trung_binh"])
+        }
+        for row in thong_ke_mon_hoc
+    ]
+    mon_hoc_can_cai_thien = [
+        mon for mon in thong_ke_mon_hoc
+        if mon["diem_trung_binh"] < 4.0
+    ]
+    sinh_vien_can_cai_thien = conn.execute("""
+        SELECT
+            sinh_vien.ma_sv,
+            sinh_vien.ho_ten,
+            mon_hoc.ten_mon,
+            ROUND(
+                ((diem.diem_chuyen_can + diem.diem_giua_ky * 2) / 3.0) * 0.4
+                + diem.diem_cuoi_ky * 0.6,
+                2
+            ) AS diem_tong_ket
+        FROM diem
+        JOIN sinh_vien ON diem.sinh_vien_id = sinh_vien.id
+        JOIN mon_hoc ON diem.mon_hoc_id = mon_hoc.id
+        WHERE (
+            ((diem.diem_chuyen_can + diem.diem_giua_ky * 2) / 3.0) * 0.4
+            + diem.diem_cuoi_ky * 0.6
+        ) < 4.0
+        ORDER BY sinh_vien.ho_ten
+    """).fetchall()
     conn.close()
 
     return render_template(
@@ -434,7 +458,9 @@ def thong_ke():
         tong_mon_hoc=tong_mon_hoc,
         tong_luot_diem=tong_luot_diem,
         diem_trung_binh=diem_trung_binh,
-        thong_ke_mon_hoc=thong_ke_mon_hoc
+        thong_ke_mon_hoc=thong_ke_mon_hoc,
+        mon_hoc_can_cai_thien=mon_hoc_can_cai_thien,
+        sinh_vien_can_cai_thien=sinh_vien_can_cai_thien
     )
 @app.route("/tinh-diem-muc-tieu")
 def tinh_diem_muc_tieu():
