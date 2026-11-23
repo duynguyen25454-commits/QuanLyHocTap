@@ -383,6 +383,7 @@ def them_diem():
 
     return redirect(url_for("danh_sach_diem"))
 
+# Thống kê và phân tích kết quả học tập
 @app.route("/thong-ke")
 def thong_ke():
     conn = get_db_connection()
@@ -406,6 +407,8 @@ def thong_ke():
         ), 2)
         FROM diem
     """).fetchone()[0]
+
+    # Thống kê điểm trung bình theo môn học
     thong_ke_mon_hoc = conn.execute("""
         SELECT
             mon_hoc.ten_mon,
@@ -419,7 +422,7 @@ def thong_ke():
         GROUP BY mon_hoc.id, mon_hoc.ten_mon
         ORDER BY mon_hoc.ten_mon
     """).fetchall()
-    
+
     thong_ke_mon_hoc = [
         {
             "ten_mon": row["ten_mon"],
@@ -427,17 +430,22 @@ def thong_ke():
         }
         for row in thong_ke_mon_hoc
     ]
+
+    # Môn học có điểm trung bình dưới 4.0
     mon_hoc_can_cai_thien = [
         mon for mon in thong_ke_mon_hoc
         if mon["diem_trung_binh"] < 4.0
     ]
+
+    # Sinh viên có điểm tổng kết dưới 4.0
     sinh_vien_can_cai_thien = conn.execute("""
         SELECT
             sinh_vien.ma_sv,
             sinh_vien.ho_ten,
             mon_hoc.ten_mon,
             ROUND(
-                ((diem.diem_chuyen_can + diem.diem_giua_ky * 2) / 3.0) * 0.4
+                ((diem.diem_chuyen_can +
+                diem.diem_giua_ky * 2) / 3.0) * 0.4
                 + diem.diem_cuoi_ky * 0.6,
                 2
             ) AS diem_tong_ket
@@ -445,11 +453,14 @@ def thong_ke():
         JOIN sinh_vien ON diem.sinh_vien_id = sinh_vien.id
         JOIN mon_hoc ON diem.mon_hoc_id = mon_hoc.id
         WHERE (
-            ((diem.diem_chuyen_can + diem.diem_giua_ky * 2) / 3.0) * 0.4
+            ((diem.diem_chuyen_can +
+            diem.diem_giua_ky * 2) / 3.0) * 0.4
             + diem.diem_cuoi_ky * 0.6
         ) < 4.0
-        ORDER BY sinh_vien.ho_ten
+        ORDER BY diem_tong_ket ASC
     """).fetchall()
+    print("THONG KE MON:", thong_ke_mon_hoc)
+    print("SINH VIEN YEU:", sinh_vien_can_cai_thien)
     conn.close()
 
     return render_template(

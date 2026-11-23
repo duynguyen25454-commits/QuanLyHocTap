@@ -134,6 +134,7 @@
     </div>
 
     <!-- Phân tích và cảnh báo -->
+    
     <div class="card stat-card mt-4">
         <div class="card-body">
 
@@ -142,128 +143,119 @@
                 Phân tích kết quả học tập
             </h5>
 
+            <!-- Phân tích môn học -->
+            <h6 class="fw-bold mb-3">
+                <i class="bi bi-book"></i>
+                Môn học cần cải thiện
+            </h6>
+
             {% if mon_hoc_can_cai_thien %}
+            <div class="alert alert-warning">
+                Hệ thống phát hiện
+                <strong>{{ mon_hoc_can_cai_thien|length }}</strong>
+                môn học có điểm trung bình dưới 4.0.
+            </div>
 
-                <div class="alert alert-warning">
-                    <h6 class="fw-bold">
-                        <i class="bi bi-exclamation-triangle-fill"></i>
-                        Cảnh báo môn học cần cải thiện
-                    </h6>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên môn học</th>
+                            <th>Điểm trung bình</th>
+                            <th>Đánh giá</th>
+                        </tr>
+                    </thead>
 
-                    Hệ thống phát hiện
-                    <strong>{{ mon_hoc_can_cai_thien|length }}</strong>
-                    môn học có điểm trung bình dưới 4.0.
-                    Sinh viên cần chú ý cải thiện kết quả ở các môn này.
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>STT</th>
-                                <th>Tên môn học</th>
-                                <th>Điểm trung bình</th>
-                                <th>Đánh giá</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {% for mon in mon_hoc_can_cai_thien %}
-                            <tr>
-                                <td>{{ loop.index }}</td>
-
-                                <td class="fw-semibold">
-                                    {{ mon["ten_mon"] }}
-                                </td>
-
-                                <td>
-                                    <span class="text-danger fw-bold">
-                                        {{ "%.2f"|format(mon["diem_trung_binh"]) }}
-                                    </span>
-                                    /10
-                                </td>
-
-                                <td>
-                                    <span class="badge bg-danger">
-                                        Cần cải thiện
-                                    </span>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-<div class="mt-4">
-    <h6 class="fw-bold text-danger">
-        <i class="bi bi-person-exclamation"></i>
-        Danh sách sinh viên cần chú ý
-    </h6>
-
-    {% if sinh_vien_can_cai_thien %}
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>STT</th>
-                    <th>Mã sinh viên</th>
-                    <th>Tên sinh viên</th>
-                    <th>Môn học</th>
-                    <th>Điểm tổng kết</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for sv in sinh_vien_can_cai_thien %}
-                <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ sv["ma_sv"] }}</td>
-                    <td>{{ sv["ho_ten"] }}</td>
-                    <td>{{ sv["ten_mon"] }}</td>
-                    <td class="text-danger fw-bold">
-                        {{ "%.2f"|format(sv["diem_tong_ket"]) }}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    {% else %}
-    <p class="text-muted">
-        Chưa có sinh viên nào có điểm tổng kết dưới 4.0.
-    </p>
-    {% endif %}
-</div>
-                <div class="mt-3">
-                    <h6 class="fw-bold">
-                        <i class="bi bi-lightbulb"></i>
-                        Đề xuất
-                    </h6>
-
-                    <ul class="text-muted">
-                        <li>Ôn tập lại kiến thức nền tảng của các môn đang có kết quả thấp.</li>
-                        <li>Tăng cường thời gian tự học và luyện tập bài tập.</li>
-                        <li>Chủ động trao đổi với giảng viên khi gặp khó khăn.</li>
-                        <li>Theo dõi kết quả sau các lần đánh giá tiếp theo.</li>
-                    </ul>
-                </div>
-
+                    <tbody>
+                        {% for mon in mon_hoc_can_cai_thien %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td class="fw-semibold">{{ mon["ten_mon"] }}</td>
+                            <td class="text-danger fw-bold">
+                                {{ "%.2f"|format(mon["diem_trung_binh"]) }}/10
+                            </td>
+                            <td>
+                                <span class="badge bg-danger">
+                                    Cần cải thiện
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
             {% else %}
-
-                <div class="alert alert-success mb-0">
-                    <h6 class="fw-bold">
-                        <i class="bi bi-check-circle-fill"></i>
-                        Kết quả phân tích
-                    </h6>
-
-                    Hiện tại chưa phát hiện môn học nào có điểm trung bình
-                    dưới 4.0 trong dữ liệu thống kê.
-                    Hãy tiếp tục duy trì kết quả học tập.
-                </div>
-
+            <div class="alert alert-success">
+                Không có môn học nào có điểm trung bình dưới 4.0.
+            </div>
             {% endif %}
+
+            <hr class="my-4">
+
+            <!-- Phân tích sinh viên -->
+            <h6 class="fw-bold text-danger mb-3">
+                <i class="bi bi-person-exclamation"></i>
+                Danh sách sinh viên cần chú ý
+            </h6>
+
+            {% if sinh_vien_can_cai_thien %}
+            <div class="alert alert-danger">
+                Phát hiện
+                <strong>{{ sinh_vien_can_cai_thien|length }}</strong>
+                lượt điểm tổng kết dưới 4.0. Sinh viên cần chú ý cải thiện kết quả.
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>STT</th>
+                            <th>Mã sinh viên</th>
+                            <th>Tên sinh viên</th>
+                            <th>Môn học</th>
+                            <th>Điểm tổng kết</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for sv in sinh_vien_can_cai_thien %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ sv["ma_sv"] }}</td>
+                            <td>{{ sv["ho_ten"] }}</td>
+                            <td>{{ sv["ten_mon"] }}</td>
+                            <td class="text-danger fw-bold">
+                                {{ "%.2f"|format(sv["diem_tong_ket"]) }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-success">
+                Chưa có sinh viên nào có điểm tổng kết dưới 4.0.
+            </div>
+            {% endif %}
+
+            <!-- Đề xuất -->
+            <div class="mt-4">
+                <h6 class="fw-bold">
+                    <i class="bi bi-lightbulb"></i>
+                    Đề xuất cải thiện
+                </h6>
+
+                <ul class="text-muted">
+                    <li>Ôn tập lại kiến thức nền tảng của các môn có kết quả thấp.</li>
+                    <li>Tăng cường thời gian tự học và luyện tập bài tập.</li>
+                    <li>Chủ động trao đổi với giảng viên khi gặp khó khăn.</li>
+                    <li>Theo dõi kết quả sau các lần đánh giá tiếp theo.</li>
+                </ul>
+            </div>
 
         </div>
     </div>
-
 </div>
 
 <!-- Dữ liệu biểu đồ -->
@@ -280,33 +272,64 @@
     const diemTrungBinh = duLieuMonHoc.map(item => item.diem_trung_binh);
 
     const ctx = document.getElementById('bieuDoMonHoc');
-
+console.log("BIỂU ĐỒ ĐANG CHẠY", tenMon, diemTrungBinh);
+    const palette = [
+        '#2863ed',
+        '#16a085',
+        '#f39c12',
+        '#e74c3c',
+        '#8e44ad',
+        '#00bcd4',
+        '#2ecc71',
+        '#ff6384',
+        '#795548',
+        '#607d8b'
+    ];
+console.log("ĐÃ CHẠY CODE BIỂU ĐỒ MỚI");
     new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: tenMon,
-            datasets: [{
-                label: 'Điểm trung bình',
-                data: diemTrungBinh,
-                backgroundColor: '#2863ed',
-                borderRadius: 8
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    max: 10,
-                    title: {
-                        display: true,
-                        text: 'Điểm'
-                    }
+    type: 'bar',
+    data: {
+    labels: ['Điểm trung bình'],
+   labels: tenMon,
+datasets: [{
+    label: 'Điểm trung bình',
+    data: diemTrungBinh,
+    backgroundColor: [
+    '#e74c3c',
+    '#16a085',
+    '#3498db',
+    '#f39c12',
+    '#8e44ad',
+    '#2ecc71',
+    '#e84393',
+    '#607d8b'
+],
+    borderRadius: 8
+}]
+},
+   options: {
+  plugins: {
+    legend: {
+        display: false
+    },
+    tooltip: {
+        enabled: true
+    }
+},
+    responsive: true,
+    maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                max: 10,
+                title: {
+                    display: true,
+                    text: 'Điểm'
                 }
             }
         }
-    });
+    }
+});
 </script>
 
 </body>
